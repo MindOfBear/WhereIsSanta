@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christmas</title>
+  <link href="/css/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-red-500 flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+
+    <h2 class="text-2xl font-semibold mb-6">New Letter</h2>
+
+    <form method="post" th:object="${letterDto}">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">First Name</label>
+        <input class="form-input mt-2 p-2 border border-gray-300 rounded" th:field="${letterDto.firstName}">
+        <p th:if="${#fields.hasErrors('firstName')}" th:errorclass="text-danger" th:errors="${letterDto.firstName}" class="text-red-500 text-sm mt-1"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Last Name</label>
+        <input class="form-input mt-2 p-2 border border-gray-300 rounded" th:field="${letterDto.lastName}">
+        <p th:if="${#fields.hasErrors('lastName')}" th:errorclass="text-danger" th:errors="${letterDto.lastName}" class="text-red-500 text-sm mt-1"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input class="form-input mt-2 p-2 border border-gray-300 rounded" th:field="${letterDto.email}">
+        <p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="${letterDto.email}" class="text-red-500 text-sm mt-1"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Message</label>
+        <input class="form-input mt-2 p-2 border border-gray-300 rounded" th:field="${letterDto.letterText}">
+        <p th:if="${#fields.hasErrors('letterText')}" th:errorclass="text-danger" th:errors="${letterDto.letterText}" class="text-red-500 text-sm mt-1"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Address</label>
+        <input class="form-input mt-2 p-2 border border-gray-300 rounded" th:field="${letterDto.address}">
+        <p th:if="${#fields.hasErrors('address')}" th:errorclass="text-danger" th:errors="${letterDto.address}" class="text-red-500 text-sm mt-1"></p>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Send Letter</button>
+        <a href="/letters" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">Cancel</a>
+      </div>
+    </form>
+
+  </div>
+
+</body>
+</html>

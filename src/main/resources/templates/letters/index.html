@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christmas</title>
+  <link href="/css/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="text-center bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Letters</h1>
+    <a href="/letters/create" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
+      New Letter
+    </a>
+    
+    <table class="table-auto w-full border-collapse">
+    <thead>
+        <tr>
+            <th class="border px-4 py-2">Name</th>
+            <th class="border px-4 py-2">Message</th>
+            <th class="border px-4 py-2">Email</th>
+            <th class="border px-4 py-2">Address</th>
+            <th class="border px-4 py-2">Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="letter : ${letters}">
+            <td th:text="${letter.firstName} + ' ' + ${letter.lastName}" class="border px-4 py-2"></td>
+            <td th:text="${letter.letterText}" class="border px-4 py-2"></td>
+            <td th:text="${letter.email}" class="border px-4 py-2"></td>
+            <td th:text="${letter.address}" class="border px-4 py-2"></td>
+            <td th:text="${letter.createdAt.toString().substring(0, 10)}" class="border px-4 py-2"></td>
+			
+			<td style="white-space:nowrap">
+				<a class = ""
+				th:href="@{/letters/edit(id=${letter.id})}">
+				Edit
+				</a>
+		
+				<a class = ""
+				th:href="@{/letters/delete(id=${letter.id})}"
+				onclick = "return confirm('Are you sure?')">
+				Delete
+				</a>
+			</td>
+			       
+        </tr>
+    </tbody>
+</table>
+    
+    
+  </div>
+</body>
+
+</html>
