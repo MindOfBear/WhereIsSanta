@@ -106,11 +106,35 @@ public class LettersController {
 		model.addAttribute("letter", letter);
 		
 		if(result.hasErrors()) {
-			return "clients/edit";
+			return "letters/edit";
 		}
+		
+		letter.setFirstName(letterDto.getFirstName());
+		letter.setLastName(letterDto.getLastName());
+		letter.setEmail(letterDto.getEmail());
+		letter.setLetterText(letterDto.getLetterText());
+		letter.setAddress(letterDto.getAddress());
+		
+		try {
+			letterRepo.save(letter);
+		} catch (Exception ex) {
+			result.addError(new FieldError("letterDto", "email", letterDto.getEmail(), false, null, null, "Email already used"));
+			return "letters/edit";
+		}
+		
 		
 		return "redirect:/letters";
 	}
 	
+	@GetMapping("/delete")
+	public String deleteLetter(@RequestParam int id) {
+		Letter letter = letterRepo.findById(id).orElse(null);
+		
+		if(letter != null) {
+			letterRepo.delete(letter);
+		}
+		
+		return "redirect:/letters";
+	}
 	
 }
