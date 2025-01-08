@@ -1,5 +1,7 @@
 package com.app.christmas.controllers;
 
+import java.sql.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -11,9 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.sql.Date;
-import java.time.LocalDateTime;
 
 import com.app.christmas.models.Letter;
 import com.app.christmas.models.LetterDto;
@@ -64,7 +63,8 @@ public class LettersController {
 		letter.setEmail(letterDto.getEmail());
 		letter.setLetterText(letterDto.getLetterText());
 		letter.setAddress(letterDto.getAddress());
-		letter.setCreatedAt(new Date(10));
+		Date currentDate = new Date(System.currentTimeMillis());
+		letter.setCreatedAt(currentDate);
 		
 		letterRepo.save(letter);
 		
