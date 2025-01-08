@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -69,5 +70,47 @@ public class LettersController {
 		
 	    return "redirect:/letters";
 	}
+	
+	@GetMapping("/edit")
+	public String editLetter(Model model, @RequestParam int id) {
+		Letter letter = letterRepo.findById(id).orElse(null);
+		if(letter == null) {
+			return "reddirect::/letters";
+		}
+		
+		LetterDto letterDto = new LetterDto();
+		letterDto.setFirstName(letter.getFirstName());
+		letterDto.setLastName(letter.getLastName());
+		letterDto.setEmail(letter.getEmail());
+		letterDto.setLetterText(letter.getLetterText());
+		letterDto.setAddress(letter.getAddress());
+		
+		model.addAttribute("letter", letter);
+		model.addAttribute("letterDto", letterDto);
+		
+		return "letters/edit";
+	}
+	
+	@PostMapping("/edit")
+	public String editLetter(
+			Model model,
+			@RequestParam int id,
+			@Valid @ModelAttribute LetterDto letterDto,
+			BindingResult result
+			) {
+		
+		Letter letter = letterRepo.findById(id).orElse(null);
+		if(letter == null) {
+			return "redirect:/letters";
+		}
+		model.addAttribute("letter", letter);
+		
+		if(result.hasErrors()) {
+			return "clients/edit";
+		}
+		
+		return "redirect:/letters";
+	}
+	
 	
 }
