@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,37 +50,36 @@ public class LettersController {
 	public String createLetter(
 	        @ModelAttribute @Valid LetterDto letterDto,
 	        BindingResult result,
+	        @RequestParam String email,
 	        Model model) {
-
-	    int letterCount = letterRepo.countByEmail(letterDto.getEmail());
-	    if (letterCount >= 3) {
-	        model.addAttribute("limitMessage", "The elves are SO BUSY making the other wishes come to life!");
-	        return "letters/create";
-	    }
 
 	    if (result.hasErrors()) {
 	        return "letters/create";
 	    }
 
-	    User user = userRepo.findByEmail(letterDto.getEmail());
-	    
+	    User user = userRepo.findByEmail(email);
 	    if (user == null) {
 	        user = new User();
-	        user.setEmail(letterDto.getEmail());
+	        user.setEmail(email);
 	        userRepo.save(user);
 	    }
 
-	    System.out.println("User found or created: " + user.getEmail());
+	    int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+	    long letterCount = letterRepo.countByUserIdAndYear(user.getId(), currentYear);
+	    if (letterCount >= 3) {
+	        model.addAttribute("limitMessage", "The elves are SO BUSY making the other wishes come to life!");
+	        return "letters/create";
+	    }
 
 	    Letter letter = new Letter();
 	    letter.setFirstName(letterDto.getFirstName());
 	    letter.setLastName(letterDto.getLastName());
-	    letter.setEmail(letterDto.getEmail());
 	    letter.setLetterText(letterDto.getLetterText());
 	    letter.setAddress(letterDto.getAddress());
-	    letter.setCreatedAt(new Date(System.currentTimeMillis()));
+	    Date currentDate = new Date(System.currentTimeMillis());
+		letter.setCreatedAt(currentDate);
 	    letter.setUser(user);
-	    
+
 	    letterRepo.save(letter);
 
 	    return "redirect:/letters";
@@ -89,57 +87,51 @@ public class LettersController {
 	
 	@GetMapping("/edit")
 	public String editLetter(Model model, @RequestParam int id) {
-		Letter letter = letterRepo.findById(id).orElse(null);
-		if(letter == null) {
-			return "reddirect::/letters";
-		}
-		
-		LetterDto letterDto = new LetterDto();
-		letterDto.setFirstName(letter.getFirstName());
-		letterDto.setLastName(letter.getLastName());
-		letterDto.setEmail(letter.getEmail());
-		letterDto.setLetterText(letter.getLetterText());
-		letterDto.setAddress(letter.getAddress());
-		
-		model.addAttribute("letter", letter);
-		model.addAttribute("letterDto", letterDto);
-		
-		return "letters/edit";
+	    Letter letter = letterRepo.findById(id).orElse(null);
+	    if (letter == null) {
+	        return "redirect:/letters";
+	    }
+
+	    LetterDto letterDto = new LetterDto();
+	    letterDto.setFirstName(letter.getFirstName());
+	    letterDto.setLastName(letter.getLastName());
+	    letterDto.setLetterText(letter.getLetterText());
+	    letterDto.setAddress(letter.getAddress());
+
+	    model.addAttribute("letter", letter);
+	    model.addAttribute("letterDto", letterDto);
+
+	    return "letters/edit";
 	}
 	
 	@PostMapping("/edit")
 	public String editLetter(
-			Model model,
-			@RequestParam int id,
-			@Valid @ModelAttribute LetterDto letterDto,
-			BindingResult result
-			) {
-		
-		Letter letter = letterRepo.findById(id).orElse(null);
-		if(letter == null) {
-			return "redirect:/letters";
-		}
-		model.addAttribute("letter", letter);
-		
-		if(result.hasErrors()) {
-			return "letters/edit";
-		}
-		
-		letter.setFirstName(letterDto.getFirstName());
-		letter.setLastName(letterDto.getLastName());
-		letter.setEmail(letterDto.getEmail());
-		letter.setLetterText(letterDto.getLetterText());
-		letter.setAddress(letterDto.getAddress());
-		
-		try {
-			letterRepo.save(letter);
-		} catch (Exception ex) {
-			result.addError(new FieldError("letterDto", "email", letterDto.getEmail(), false, null, null, "Email already used"));
-			return "letters/edit";
-		}
-		
-		
-		return "redirect:/letters";
+	        Model model,
+	        @RequestParam int id,
+	        @Valid @ModelAttribute LetterDto letterDto,
+	        BindingResult result) {
+
+	    Letter letter = letterRepo.findById(id).orElse(null);
+	    if (letter == null) {
+	        return "redirect:/letters";
+	    }
+
+	    User user = letter.getUser();
+	    if (user != null) {
+	        model.addAttribute("email", user.getEmail());
+	    }
+
+	    if (result.hasErrors()) {
+	        return "letters/edit";
+	    }
+
+	    letter.setFirstName(letterDto.getFirstName());
+	    letter.setLastName(letterDto.getLastName());
+	    letter.setLetterText(letterDto.getLetterText());
+	    letter.setAddress(letterDto.getAddress());
+
+	    letterRepo.save(letter);
+	    return "redirect:/letters";
 	}
 	
 	@GetMapping("/delete")

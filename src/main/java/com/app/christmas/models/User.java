@@ -14,6 +14,9 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
+    private String password;
+    @Column(columnDefinition = "int default 0")
+    private int admin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Letter> letters;
@@ -41,4 +44,20 @@ public class User {
     public void setLetters(List<Letter> letters) {
         this.letters = letters;
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(int admin) {
+		this.admin = admin;
+	}
 }
