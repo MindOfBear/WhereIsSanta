@@ -13,7 +13,6 @@
 
     <form method="post" th:object="${letterDto}">
     
-      <!-- Letter ID -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Letter ID</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800 bg-gray-100" disabled th:value="${letter.id}">
@@ -23,44 +22,36 @@
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800" disabled th:value="${letter.createdAt}">
       </div>
 
-      <!-- First Name -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">First Name</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.firstName}">
         <p th:if="${#fields.hasErrors('firstName')}" th:errorclass="text-danger" th:errors="${letterDto.firstName}" class="text-red-500 text-sm mt-1"></p>
       </div>
 
-      <!-- Last Name -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Last Name</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.lastName}">
         <p th:if="${#fields.hasErrors('lastName')}" th:errorclass="text-danger" th:errors="${letterDto.lastName}" class="text-red-500 text-sm mt-1"></p>
       </div>
 
-      <!-- Email -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Email</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.email}">
         <p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="${letterDto.email}" class="text-red-500 text-sm mt-1"></p>
       </div>
 
-      <!-- Message -->
       <div class="mb-6">
         <label class="block text-lg font-medium text-gray-700">Message</label>
         <textarea class="w-full p-3 border border-gray-300 rounded-md text-gray-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500" th:field="${letterDto.letterText}" rows="4"></textarea>
         <p th:if="${#fields.hasErrors('letterText')}" th:errorclass="text-danger" th:errors="${letterDto.letterText}" class="text-red-500 text-sm mt-1"></p>
       </div>
 
-      <!-- Address -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Address</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.address}">
         <p th:if="${#fields.hasErrors('address')}" th:errorclass="text-danger" th:errors="${letterDto.address}" class="text-red-500 text-sm mt-1"></p>
       </div>
 
-      <!-- Created At -->
-
-      <!-- Form Actions -->
       <div class="flex justify-between mt-6">
         <button type="submit" class="w-full sm:w-auto bg-blue-500 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-blue-600 transition">
           Edit Letter

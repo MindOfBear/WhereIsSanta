@@ -15,44 +15,47 @@
     </div>
 
     <form method="post" th:object="${letterDto}">
-      <!-- First Name -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">First Name</label>
         <input class="w-full p-2 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.firstName}">
       </div>
 
-      <!-- Last Name -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Last Name</label>
         <input class="w-full p-2 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.lastName}">
       </div>
 
-      <!-- Email -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Email</label>
         <input class="w-full p-2 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.email}">
       </div>
 
-      <!-- Message -->
       <div class="mb-6">
         <label class="block text-lg font-medium text-gray-700">Your Message for Santa</label>
         <textarea class="w-full p-3 border border-gray-300 rounded-md text-gray-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500" th:field="${letterDto.letterText}" rows="4"></textarea>
       </div>
 
-      <!-- Address -->
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Your Address</label>
         <input class="w-full p-2 border border-gray-300 rounded-md text-gray-800" th:field="${letterDto.address}">
       </div>
 
-      <div class="flex justify-between mt-6">
-        <button type="submit" class="w-full sm:w-auto bg-blue-500 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-blue-600 transition">
-         🎁 Send Letter
+    <div class="mt-6 text-center" th:if="${limitMessage}">
+        <p class="text-red-600 font-bold text-lg" th:text="${limitMessage}"></p>
+    </div>
+
+    <div class="flex justify-between mt-6">
+        <button 
+            type="submit" 
+            class="w-full sm:w-auto bg-blue-500 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-blue-600 transition"
+            th:disabled="${limitMessage != null}">
+            🎁 Send Letter
         </button>
+
         <a href="/letters" class="w-full sm:w-auto bg-gray-500 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-gray-600 transition">
-          ❌ Cancel
+            ❌ Cancel
         </a>
-      </div>
+    </div>
     </form>
 
     <div class="mt-8 text-center">

@@ -15,11 +15,11 @@ public class Letter {
 	private String firstName;
 	private String lastName;
 	
-	@Column(unique = true, nullable = false)
 	private String email;
 	private String address;
 	private String letterText;
 	private Date createdAt;
+	
 	public int getId() {
 		return id;
 	}
@@ -61,6 +61,18 @@ public class Letter {
 	}
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	public User getUser() {
+	    return user;
+	}
+
+	public void setUser(User user) {
+	    this.user = user;
 	}
 	
 	

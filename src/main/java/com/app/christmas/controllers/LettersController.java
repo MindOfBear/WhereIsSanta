@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.christmas.models.Letter;
 import com.app.christmas.models.LetterDto;
+import com.app.christmas.models.User;
 import com.app.christmas.repositories.LetterRepository;
+import com.app.christmas.repositories.UserRepository;
 
 import jakarta.validation.Valid;
 
@@ -27,47 +29,61 @@ public class LettersController {
 
 	@Autowired
 	private LetterRepository letterRepo;
-	
+
+	@Autowired
+	private UserRepository userRepo;
+
 	@GetMapping({"", "/"})
 	public String getLetters(Model model) {
 	    var letters = letterRepo.findAll(Sort.by(Sort.Order.desc("id")));
 	    model.addAttribute("letters", letters);
 	    return "letters/index";
 	}
-	
-	
+
 	@GetMapping("/create")
 	public String createLetter(Model model) {
 	    LetterDto letterDto = new LetterDto();
 	    model.addAttribute("letterDto", letterDto);
-	    
 	    return "letters/create";
 	}
-	
+
 	@PostMapping("/create")
-	public String createletter(
-			@ModelAttribute @Valid LetterDto letterDto, BindingResult result) {
-	    
-		if (letterRepo.findByEmail(letterDto.getEmail()) != null) {
-	        result.addError(new FieldError("letterDto", "email", letterDto.getEmail(),
-	                false, null, null, "Email already used!"));
+	public String createLetter(
+	        @ModelAttribute @Valid LetterDto letterDto,
+	        BindingResult result,
+	        Model model) {
+
+	    int letterCount = letterRepo.countByEmail(letterDto.getEmail());
+	    if (letterCount >= 3) {
+	        model.addAttribute("limitMessage", "The elves are SO BUSY making the other wishes come to life!");
+	        return "letters/create";
 	    }
 
-		if (result.hasErrors()) {
-			return "letters/create";
-		}
-		
-		Letter letter = new Letter();
-		letter.setFirstName(letterDto.getFirstName());
-		letter.setLastName(letterDto.getLastName());
-		letter.setEmail(letterDto.getEmail());
-		letter.setLetterText(letterDto.getLetterText());
-		letter.setAddress(letterDto.getAddress());
-		Date currentDate = new Date(System.currentTimeMillis());
-		letter.setCreatedAt(currentDate);
-		
-		letterRepo.save(letter);
-		
+	    if (result.hasErrors()) {
+	        return "letters/create";
+	    }
+
+	    User user = userRepo.findByEmail(letterDto.getEmail());
+	    
+	    if (user == null) {
+	        user = new User();
+	        user.setEmail(letterDto.getEmail());
+	        userRepo.save(user);
+	    }
+
+	    System.out.println("User found or created: " + user.getEmail());
+
+	    Letter letter = new Letter();
+	    letter.setFirstName(letterDto.getFirstName());
+	    letter.setLastName(letterDto.getLastName());
+	    letter.setEmail(letterDto.getEmail());
+	    letter.setLetterText(letterDto.getLetterText());
+	    letter.setAddress(letterDto.getAddress());
+	    letter.setCreatedAt(new Date(System.currentTimeMillis()));
+	    letter.setUser(user);
+	    
+	    letterRepo.save(letter);
+
 	    return "redirect:/letters";
 	}
 	
