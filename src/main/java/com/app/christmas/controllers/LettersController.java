@@ -91,7 +91,7 @@ public class LettersController {
 
 	    letterRepo.save(letter);
 
-	    return "redirect:/letters";
+	    return "/letters/information";
 	}
 	
 	@GetMapping("/edit")
