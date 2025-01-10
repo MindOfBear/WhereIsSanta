@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎄Santa Letter Box</title>
   <link rel="stylesheet" href="/css/output.css">
+  <script th:if="${session.adminUser == null || session.adminUser.admin != 1}">
+  	window.location.replace('/letters');
+  </script>
 </head>
 <body class="bg-gradient-to-b from-green-600 via-green-500 to-red-500 font-sans h-screen">
 
@@ -59,6 +62,5 @@
       </div>
     </form>
   </div>
-
 </body>
 </html>

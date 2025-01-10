@@ -20,6 +20,7 @@ import com.app.christmas.repositories.LetterRepository;
 import com.app.christmas.repositories.UserRepository;
 
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -86,7 +87,11 @@ public class LettersController {
 	}
 	
 	@GetMapping("/edit")
-	public String editLetter(Model model, @RequestParam int id) {
+	public String editLetter(Model model, @RequestParam int id, HttpSession session) {
+	    User adminUser = (User) session.getAttribute("adminUser");
+	    if (adminUser == null || adminUser.getAdmin() != 1) {
+	        return "redirect:/letters";
+	    }
 	    Letter letter = letterRepo.findById(id).orElse(null);
 	    if (letter == null) {
 	        return "redirect:/letters";
@@ -108,8 +113,14 @@ public class LettersController {
 	public String editLetter(
 	        Model model,
 	        @RequestParam int id,
+	        HttpSession session,
 	        @Valid @ModelAttribute LetterDto letterDto,
 	        BindingResult result) {
+		
+	    User adminUser = (User) session.getAttribute("adminUser");
+	    if (adminUser == null || adminUser.getAdmin() != 1) {
+	        return "redirect:/letters";
+	    }
 
 	    Letter letter = letterRepo.findById(id).orElse(null);
 	    if (letter == null) {
@@ -135,7 +146,11 @@ public class LettersController {
 	}
 	
 	@GetMapping("/delete")
-	public String deleteLetter(@RequestParam int id) {
+	public String deleteLetter(@RequestParam int id, HttpSession session) {
+		User adminUser = (User) session.getAttribute("adminUser");
+			if (adminUser == null || adminUser.getAdmin() != 1) {
+				return "redirect:/letters";
+		}
 		Letter letter = letterRepo.findById(id).orElse(null);
 		
 		if(letter != null) {

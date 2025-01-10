@@ -31,6 +31,11 @@
 	  <a href="/" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 border border-black ml-4">
 	    Go to Countdown
 	  </a>
+	  <a th:if="${session.adminUser != null}" 
+		href="/admin/logout" 
+		class="bg-red-500 text-white font-bold py-3 px-3 rounded-full shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 border border-black ml-4">
+	 	Logout
+	 </a>
 	</div>
 
     <div class="space-y-6">
@@ -52,8 +57,17 @@
         <div class="text-lg text-gray-700 mb-4" th:text="${letter.letterText}"></div>
 
         <div class="flex space-x-4">
-          <a th:href="@{/letters/edit(id=${letter.id})}" class="text-blue-500 hover:text-blue-700">Edit</a>
-          <a th:href="@{/letters/delete(id=${letter.id})}" onclick="return confirm('Are you sure?')" class="text-red-500 hover:text-red-700">Delete</a>
+			<a th:if="${session.adminUser != null}" 
+			   th:href="@{/letters/edit(id=${letter.id})}" 
+			   class="text-blue-500 hover:text-blue-700">
+			   Edit
+			</a>
+			<a th:if="${session.adminUser != null}" 
+			   th:href="@{/letters/delete(id=${letter.id})}" 
+			   onclick="return confirm('Are you sure?')" 
+			   class="text-red-500 hover:text-red-700">
+			   Delete
+			</a>			
         </div>
       </div>
     </div>
