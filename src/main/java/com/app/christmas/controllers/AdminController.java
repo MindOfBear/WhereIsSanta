@@ -11,6 +11,7 @@ import com.app.christmas.models.User;
 import com.app.christmas.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Controller
 public class AdminController {
@@ -29,27 +30,19 @@ public class AdminController {
             @RequestParam String password,
             HttpSession session,
             Model model) {
+    	
+        if (session.getAttribute("adminUser") != null) {
+            return "redirect:/letters";
+        }
 
         User user = userRepo.findByEmail(email);
-        if (user == null || !user.getPassword().equals(password) || user.getAdmin() != 1) {
-            model.addAttribute("errorMessage", "Invalid credentials or not an admin.");
-            return "admin/login";
+        if (user == null || !Objects.equals(user.getPassword(), password) || user.getAdmin() != 1) {
+            return "redirect:/admin";
         }
 
+        System.out.println("A ajuns");
         session.setAttribute("adminUser", user);
-
         return "redirect:/letters";
-    }
-
-    @GetMapping("/admin/dashboard")
-    public String adminDashboard(HttpSession session, Model model) {
-        User adminUser = (User) session.getAttribute("adminUser");
-        if (adminUser == null) {
-        	return "redirect:/letters";
-        }
-
-        model.addAttribute("adminUser", adminUser);
-        return "letters";
     }
 
     @GetMapping("/admin/logout")

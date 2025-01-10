@@ -1,6 +1,7 @@
 package com.app.christmas.controllers;
 
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,7 +23,6 @@ import com.app.christmas.repositories.UserRepository;
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpSession;
 
-
 @Controller
 @RequestMapping("/letters")
 public class LettersController {
@@ -34,8 +34,16 @@ public class LettersController {
 	private UserRepository userRepo;
 
 	@GetMapping({"", "/"})
-	public String getLetters(Model model) {
-	    var letters = letterRepo.findAll(Sort.by(Sort.Order.desc("id")));
+	public String getLetters(Model model, HttpSession session) {
+	    User adminUser = (User) session.getAttribute("adminUser");
+
+	    List<Letter> letters;
+	    if (adminUser != null && adminUser.getAdmin() == 1) {
+	        letters = letterRepo.findAll(Sort.by(Sort.Order.desc("id")));
+	    } else {
+	        letters = letterRepo.findByApproved(1, Sort.by(Sort.Order.desc("id")));
+	    }
+
 	    model.addAttribute("letters", letters);
 	    return "letters/index";
 	}
@@ -160,4 +168,19 @@ public class LettersController {
 		return "redirect:/letters";
 	}
 	
+	@GetMapping("/approve")
+	public String approveLetter(@RequestParam int id, HttpSession session) {
+		User adminUser = (User) session.getAttribute("adminUser");
+			if (adminUser == null || adminUser.getAdmin() != 1) {
+				return "redirect:/letters";
+		}
+		Letter letter = letterRepo.findById(id).orElse(null);
+		
+		if(letter != null) {
+			letter.setApproved(1);
+			letterRepo.save(letter);
+		}
+		
+		return "redirect:/letters";
+	}
 }

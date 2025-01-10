@@ -16,6 +16,8 @@ public class Letter {
     private String address;
     private String letterText;
     private Date createdAt;
+    @Column(columnDefinition = "int default 0")
+    private int approved;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -76,4 +78,12 @@ public class Letter {
     public void setUser(User user) {
         this.user = user;
     }
+    
+    public int getApproved() {
+		return approved;
+	}
+
+	public void setApproved(int approved) {
+		this.approved = approved;
+	}
 }
