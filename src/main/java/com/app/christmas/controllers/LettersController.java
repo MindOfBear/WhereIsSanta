@@ -34,17 +34,42 @@ public class LettersController {
 	private UserRepository userRepo;
 
 	@GetMapping({"", "/"})
-	public String getLetters(Model model, HttpSession session) {
+	public String getLetters(
+	    @RequestParam(required = false) Integer year,
+	    @RequestParam(required = false) String email,
+	    Model model,
+	    HttpSession session
+	) {
 	    User adminUser = (User) session.getAttribute("adminUser");
 
 	    List<Letter> letters;
+	    Sort sort;
+	    
 	    if (adminUser != null && adminUser.getAdmin() == 1) {
-	        letters = letterRepo.findAll(Sort.by(Sort.Order.desc("id")));
+	        sort = Sort.by(
+	                Sort.Order.asc("approved"),
+	                Sort.Order.desc("createdAt")
+	        );
+	        letters = letterRepo.findAllByEmailAndYear(email, year, sort);
 	    } else {
-	        letters = letterRepo.findByApproved(1, Sort.by(Sort.Order.desc("id")));
+	    	sort = Sort.by(Sort.Order.desc("createdAt"));
+	        letters = letterRepo.findAllByEmailAndYear(email, year, sort);
+	        letters = letters.stream()
+	                .filter(letter -> letter.getApproved() == 1)
+	                .toList();
+	    }
+	    
+	    if (email != null && email.trim().isEmpty()) {
+	        email = null;
 	    }
 
+	    List<Integer> years = letterRepo.findDistinctYears();
+
 	    model.addAttribute("letters", letters);
+	    model.addAttribute("years", years);
+	    model.addAttribute("selectedYear", year);
+	    model.addAttribute("searchEmail", email);
+
 	    return "letters/index";
 	}
 
@@ -101,6 +126,7 @@ public class LettersController {
 	        return "redirect:/letters";
 	    }
 	    Letter letter = letterRepo.findById(id).orElse(null);
+	    System.out.println("ajunge aici");
 	    if (letter == null) {
 	        return "redirect:/letters";
 	    }
@@ -129,25 +155,27 @@ public class LettersController {
 	    if (adminUser == null || adminUser.getAdmin() != 1) {
 	        return "redirect:/letters";
 	    }
-
+	    
 	    Letter letter = letterRepo.findById(id).orElse(null);
 	    if (letter == null) {
 	        return "redirect:/letters";
 	    }
-
+	    
 	    User user = letter.getUser();
 	    if (user != null) {
 	        model.addAttribute("email", user.getEmail());
 	    }
-
+	    
 	    if (result.hasErrors()) {
+	    	 System.out.println(result);
 	        return "letters/edit";
 	    }
-
+	    
 	    letter.setFirstName(letterDto.getFirstName());
 	    letter.setLastName(letterDto.getLastName());
 	    letter.setLetterText(letterDto.getLetterText());
 	    letter.setAddress(letterDto.getAddress());
+
 
 	    letterRepo.save(letter);
 	    return "redirect:/letters";

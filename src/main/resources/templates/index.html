@@ -48,10 +48,9 @@
 	      	const minutes = Math.floor((diff / (1000 * 60)) % 60);
 	      	const seconds = Math.floor((diff / 1000) % 60);
 	
-	      	document.getElementById('timer').textContent = 
-	        `${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
+	      	document.getElementById('timer').textContent = `${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
 		}
-    
+    	
     	setInterval(updateTimer, 1000);
     	updateTimer();
 	</script>

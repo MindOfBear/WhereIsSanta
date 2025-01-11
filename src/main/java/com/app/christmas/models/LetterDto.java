@@ -10,10 +10,11 @@ public class LetterDto {
     @NotEmpty(message = "Last name is required")
     private String lastName;
 
-    @NotEmpty(message = "Letter message is required")
+    @NotEmpty(message = "Message is required")
     private String letterText;
+    
+    
   
-    private String phone;
     private String address;
 
     public String getFirstName() {
@@ -40,14 +41,6 @@ public class LetterDto {
         this.letterText = letterText;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -55,4 +48,5 @@ public class LetterDto {
     public void setAddress(String address) {
         this.address = address;
     }
+    
 }

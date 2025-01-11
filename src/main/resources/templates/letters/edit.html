@@ -13,9 +13,8 @@
 
   <div class="w-full max-w-3xl bg-white p-8 rounded-lg shadow-xl mx-auto mt-10 border border-gray-300">
     <h2 class="text-3xl font-semibold text-gray-800 mb-8 text-center">Edit Your Christmas Letter</h2>
-
+	
     <form method="post" th:object="${letterDto}">
-    
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Letter ID</label>
         <input class="w-full p-1 border border-gray-300 rounded-md text-gray-800 bg-gray-100" disabled th:value="${letter.id}">

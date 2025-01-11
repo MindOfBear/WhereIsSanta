@@ -22,18 +22,38 @@
 <body class="flex flex-col items-center justify-start min-h-screen p-8">
   <div class="w-full max-w-4xl space-y-8">
     <h1 class="text-4xl font-bold text-gray-100 mb-4 text-center">Letters sent to Santa</h1>
-    <div class="text-center mb-6">
-	  <a href="/letters/create" class="bg-red-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:bg-red-700 transition-transform transform hover:scale-105 border border-black">
-	     ✉️ Create a Letter
-	  </a>
-	  <a href="/" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 border border-black ml-4">
-	    Go to Countdown
-	  </a>
-	  <a th:if="${session.adminUser != null}" 
-		href="/admin/logout" 
-		class="bg-red-500 text-white font-bold py-3 px-3 rounded-full shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 border border-black ml-4">
-	 	Logout
-	 </a>
+    <div class="flex justify-between items-center mb-6">
+    	<div>
+		  <a href="/letters/create" class="bg-red-600 text-white font-bold py-3 px-5 rounded-full shadow-lg hover:bg-red-700 border border-black">
+		     ✉️ Create a Letter
+		  </a>
+		  <a href="/" class="bg-blue-600 text-white font-bold py-3 px-5 rounded-full shadow-lg hover:bg-blue-700 border border-black ml-4">
+		    Go to Countdown
+		  </a>
+		  <a th:if="${session.adminUser != null}" 
+			href="/admin/logout" 
+			class="bg-red-500 text-white font-bold py-3 px-2 rounded-full shadow-lg hover:bg-red-700 border border-black ml-4">
+		 	Sign Out
+		 </a>
+	</div>
+		<form method="get" class="">
+		    <input type="text" name="email" placeholder="Search by email..." 
+		     
+		           class="w-48 p-2 border border-gray-300 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+		
+		    <select name="year" class="p-2 border border-gray-300 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+		        <option value="" selected>All Years</option>
+		        <option th:each="y : ${years}" 
+		                th:value="${y}" 
+		                th:text="${y}" 
+		                th:selected="${selectedYear == y}"></option>
+		    </select>
+		
+		    <button type="submit" 
+		            class="bg-green-500 text-white border border-black font-bold py-2 px-4 rounded-full shadow-lg hover:bg-green-700">
+		        🔍
+		    </button>
+		</form>
 	</div>
     <div class="space-y-6">
       <div th:each="letter : ${letters}" class="bg-white p-6 rounded-lg shadow-lg">
